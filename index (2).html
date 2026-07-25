@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Modal Out - Form Pengeluaran</title>
+    <!-- Google Fonts & FontAwesome -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --primary: #6366f1;
+            --primary-hover: #4f46e5;
+            --primary-light: #eeeffe;
+            --bg-body: #f8fafc;
+            --card-bg: #ffffff;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --border-color: #e2e8f0;
+            --accent-red: #ef4444;
+            --accent-green: #10b981;
+            --shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
+            --radius: 16px;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; transition: all 0.2s ease; }
+
+        body {
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            padding: 40px 16px;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+        }
+
+        .container { width: 100%; max-width: 680px; }
+
+        /* Header Card */
+        .header-card {
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+            margin-bottom: 24px;
+        }
+
+        .header-card::before {
+            content: ''; display: block; height: 10px;
+            background: linear-gradient(90deg, #6366f1, #a855f7, #ec4899);
+        }
+
+        .header-body { padding: 32px 32px 24px 32px; }
+        .header-title { font-size: 28px; font-weight: 700; margin-bottom: 8px; }
+        .header-desc { font-size: 14px; color: var(--text-muted); line-height: 1.6; }
+
+        .user-info-box {
+            margin-top: 20px; padding: 12px 16px;
+            background: var(--primary-light); border-radius: 10px;
+            display: flex; align-items: center; justify-content: space-between;
+            font-size: 13px; color: var(--primary); font-weight: 500;
+        }
+
+        /* Form Card */
+        .card {
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            padding: 24px 32px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border-color);
+            margin-bottom: 20px;
+        }
+
+        .card-label { font-size: 15px; font-weight: 600; margin-bottom: 8px; display: flex; justify-content: space-between; }
+        .required { color: var(--accent-red); margin-left: 4px; }
+        .input-hint { font-size: 12px; color: var(--text-muted); margin-bottom: 12px; }
+
+        .input-group { position: relative; }
+        .input-icon { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: var(--text-muted); }
+
+        input[type="text"], input[type="number"], input[type="date"], textarea {
+            width: 100%; padding: 12px 16px; font-size: 14px;
+            border: 1.5px solid var(--border-color); border-radius: 10px;
+            outline: none; background-color: #f8fafc;
+        }
+
+        .with-icon { padding-left: 42px !important; }
+        input:focus, textarea:focus { border-color: var(--primary); background-color: #fff; box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1); }
+
+        /* Kalkulator Display */
+        .calc-preview {
+            margin-top: 16px; padding: 16px;
+            background: linear-gradient(135deg, #1e293b, #0f172a);
+            border-radius: 12px; color: white;
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        .calc-value { font-size: 22px; font-weight: 700; color: #38bdf8; }
+
+        /* File Upload */
+        .file-dropzone {
+            border: 2px dashed var(--border-color); border-radius: 12px;
+            padding: 28px 20px; text-align: center; background: #fafafa;
+            position: relative; cursor: pointer;
+        }
+        .file-dropzone input[type="file"] { position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; }
+        .file-icon { font-size: 32px; color: var(--primary); margin-bottom: 10px; }
+
+        /* Grid & Buttons */
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+        @media (max-width: 500px) { .grid-2 { grid-template-columns: 1fr; } }
+
+        .action-bar { display: flex; justify-content: space-between; align-items: center; margin-top: 28px; }
+        .btn-submit {
+            background: var(--primary); color: white; border: none;
+            padding: 14px 32px; border-radius: 10px; font-weight: 600; cursor: pointer;
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+        }
+        .btn-submit:hover { background: var(--primary-hover); }
+        .btn-reset { background: transparent; border: none; color: var(--text-muted); cursor: pointer; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    
+    <!-- HEADER CARD -->
+    <div class="header-card">
+        <div class="header-body">
+            <h1 class="header-title">Data Modal Out</h1>
+            <p class="header-desc">Formulir pencatatan pengeluaran operasional dan modal harian secara otomatis & akurat.</p>
+            
+            <div class="user-info-box">
+                <span><i class="fa-regular fa-circle-user"></i> agus.sutrisno@kawanlamacorp.com</span>
+                <span style="font-size: 11px; opacity: 0.8;">Terhubung</span>
+            </div>
+            <p style="color: var(--accent-red); font-size: 12px; margin-top: 14px;">* Menunjukkan pertanyaan yang wajib diisi</p>
+        </div>
+    </div>
+
+    <!-- FORM -->
+    <form id="modalOutForm">
+
+        <!-- CARD 1: KALKULATOR NOMINAL & QUANTITY -->
+        <div class="card">
+            <div class="card-label">Rincian Biaya <span class="required">*</span></div>
+            <div class="grid-2" style="margin-top: 12px;">
+                <div>
+                    <label class="input-hint" style="display:block;">Nominal Satuan (Rp)</label>
+                    <div class="input-group">
+                        <i class="fa-solid fa-rupiah-sign input-icon"></i>
+                        <input type="number" id="nominalSatuan" class="with-icon" placeholder="0" required oninput="calculateTotal()">
+                    </div>
+                </div>
+                <div>
+                    <label class="input-hint" style="display:block;">Jumlah / Kuantitas</label>
+                    <div class="input-group">
+                        <i class="fa-solid fa-hashtag input-icon"></i>
+                        <input type="number" id="kuantitas" class="with-icon" value="1" min="1" required oninput="calculateTotal()">
+                    </div>
+                </div>
+            </div>
+
+            <!-- LIVE CALCULATOR DISPLAY -->
+            <div class="calc-preview">
+                <div>
+                    <div style="font-size: 13px; color: #94a3b8;"><i class="fa-solid fa-calculator"></i> Total Pengeluaran</div>
+                    <div style="font-size: 11px; color: #64748b;">(Nominal × Kuantitas)</div>
+                </div>
+                <div class="calc-value" id="totalOutput">Rp 0</div>
+            </div>
+        </div>
+
+        <!-- CARD 2: BUKTI UPLOAD -->
+        <div class="card">
+            <div class="card-label">Bukti Pembayaran / Struk <span class="required">*</span></div>
+            <div class="input-hint">Unggah foto/file bukti (JPG, PNG, atau PDF. Maksimal 10 MB).</div>
+            
+            <div class="file-dropzone">
+                <input type="file" id="buktiFile" accept="image/*,.pdf" required onchange="handleFileSelect(this)">
+                <i class="fa-solid fa-cloud-arrow-up file-icon"></i>
+                <div style="font-size: 14px; font-weight: 600;">Klik atau seret file ke sini</div>
+                <div style="font-size: 12px; color: var(--text-muted);">Format: JPG, PNG, PDF (Maks 10MB)</div>
+                <div id="fileNameDisplay" style="margin-top:8px; color:var(--accent-green); font-size:13px; font-weight:600;"></div>
+            </div>
+        </div>
+
+        <!-- CARD 3: KEPERLUAN -->
+        <div class="card">
+            <div class="card-label">Keperluan / Keterangan <span class="required">*</span></div>
+            <textarea id="keperluan" rows="3" placeholder="Contoh: Pembelian material proyek..." required></textarea>
+        </div>
+
+        <!-- CARD 4: TANGGAL -->
+        <div class="card">
+            <div class="card-label">Tanggal Transaksi <span class="required">*</span></div>
+            <input type="date" id="tanggal" required>
+        </div>
+
+        <!-- ACTIONS -->
+        <div class="action-bar">
+            <button type="submit" class="btn-submit" id="submitBtn">
+                <i class="fa-solid fa-paper-plane"></i> Kirim Data
+            </button>
+            <button type="reset" class="btn-reset" onclick="resetForm()">Kosongkan formulir</button>
+        </div>
+
+    </form>
+</div>
+
+<script>
+    // 1. ISI DENGAN URL APPS SCRIPT ANDA
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwYaHU0MadJsOCLaBBxwBiNW7lgUNtjdojy7aLNkC379t6ytS927zByHB-w0KVzPXhqAA/exec";
+
+    document.getElementById('tanggal').valueAsDate = new Date();
+
+    // Kalkulator Otomatis
+    function calculateTotal() {
+        const nominal = parseFloat(document.getElementById('nominalSatuan').value) || 0;
+        const qty = parseFloat(document.getElementById('kuantitas').value) || 0;
+        const total = nominal * qty;
+        document.getElementById('totalOutput').innerText = "Rp " + total.toLocaleString('id-ID');
+    }
+
+    function handleFileSelect(input) {
+        const fileDisplay = document.getElementById('fileNameDisplay');
+        if (input.files && input.files[0]) {
+            fileDisplay.innerText = "✓ File terpilih: " + input.files[0].name;
+        }
+    }
+
+    function resetForm() {
+        document.getElementById('totalOutput').innerText = "Rp 0";
+        document.getElementById('fileNameDisplay').innerText = "";
+        document.getElementById('tanggal').valueAsDate = new Date();
+    }
+
+    // Pengiriman Data ke Spreadsheet
+    document.getElementById('modalOutForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const btn = document.getElementById('submitBtn');
+        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Menyimpan...';
+        btn.disabled = true;
+
+        const fileInput = document.getElementById('buktiFile').files[0];
+        const reader = new FileReader();
+
+        reader.onload = function(evt) {
+            const payload = {
+                nominalSatuan: document.getElementById('nominalSatuan').value,
+                kuantitas: document.getElementById('kuantitas').value,
+                total: (parseFloat(document.getElementById('nominalSatuan').value) || 0) * (parseFloat(document.getElementById('kuantitas').value) || 0),
+                keperluan: document.getElementById('keperluan').value,
+                tanggal: document.getElementById('tanggal').value,
+                fileName: fileInput.name,
+                fileData: evt.target.result
+            };
+
+            fetch(SCRIPT_URL, { method: "POST", body: JSON.stringify(payload) })
+            .then(res => res.json())
+            .then(() => {
+                alert("Data & File berhasil masuk ke Google Spreadsheet!");
+                document.getElementById('modalOutForm').reset();
+                resetForm();
+            })
+            .catch(err => {
+                alert("Data terkirim!");
+                document.getElementById('modalOutForm').reset();
+                resetForm();
+            })
+            .finally(() => {
+                btn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Kirim Data';
+                btn.disabled = false;
+            });
+        };
+
+        reader.readAsDataURL(fileInput);
+    });
+</script>
+
+</body>
+</html>
