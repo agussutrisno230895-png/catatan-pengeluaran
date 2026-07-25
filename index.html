@@ -3,16 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Data Modal Out - Form Pengeluaran</title>
+    <title>Sistem Keuangan - Modal In & Out</title>
+
     <!-- Google Fonts & FontAwesome -->
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     
     <style>
         :root {
-            --primary: #6366f1;
-            --primary-hover: #4f46e5;
-            --primary-light: #eeeffe;
+            --primary: #4f46e5;
+            --primary-light: #eef2ff;
             --bg-body: #f8fafc;
             --card-bg: #ffffff;
             --text-main: #0f172a;
@@ -20,262 +21,510 @@
             --border-color: #e2e8f0;
             --accent-red: #ef4444;
             --accent-green: #10b981;
-            --shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
-            --radius: 16px;
+            --shadow-md: 0 10px 30px -5px rgba(0, 0, 0, 0.05);
+            --radius-lg: 20px;
+            --radius-md: 12px;
         }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; transition: all 0.2s ease; }
+        body.theme-pemasukan {
+            --primary: #10b981;
+            --primary-light: #ecfdf5;
+        }
+
+        * { 
+            box-sizing: border-box; 
+            margin: 0; padding: 0; 
+            font-family: 'Plus Jakarta Sans', sans-serif; 
+            transition: all 0.2s ease; 
+        }
 
         body {
             background-color: var(--bg-body);
             color: var(--text-main);
-            padding: 40px 16px;
+            padding: 24px 16px 60px;
             min-height: 100vh;
             display: flex;
             justify-content: center;
         }
 
-        .container { width: 100%; max-width: 680px; }
+        .app-container { width: 100%; max-width: 900px; }
+
+        /* Top Navigation Tabs */
+        .nav-tabs-custom {
+            display: flex;
+            background: #ffffff;
+            padding: 6px;
+            border-radius: 50px;
+            border: 1px solid var(--border-color);
+            margin-bottom: 24px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 10px 16px;
+            border: none;
+            background: transparent;
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--text-muted);
+            border-radius: 30px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .tab-btn.active {
+            background: var(--text-main);
+            color: #ffffff;
+            box-shadow: 0 4px 12px rgba(15, 23, 42, 0.15);
+        }
+
+        /* View Switching */
+        .view-section { display: none; }
+        .view-section.active { display: block; }
+
+        /* Type Toggle (Form) */
+        .type-toggle-container {
+            background: #ffffff;
+            padding: 6px;
+            border-radius: 16px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 6px;
+            margin-bottom: 20px;
+            border: 1px solid var(--border-color);
+        }
+
+        .type-btn {
+            padding: 12px;
+            font-size: 14px;
+            font-weight: 700;
+            border-radius: 12px;
+            cursor: pointer;
+            border: none;
+            background: transparent;
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .type-btn.active-out { background: #ef4444; color: white; }
+        .type-btn.active-in { background: #10b981; color: white; }
 
         /* Header Card */
         .header-card {
-            background: var(--card-bg);
-            border-radius: var(--radius);
-            box-shadow: var(--shadow);
-            overflow: hidden;
-            border: 1px solid var(--border-color);
-            margin-bottom: 24px;
-        }
-
-        .header-card::before {
-            content: ''; display: block; height: 10px;
-            background: linear-gradient(90deg, #6366f1, #a855f7, #ec4899);
-        }
-
-        .header-body { padding: 32px 32px 24px 32px; }
-        .header-title { font-size: 28px; font-weight: 700; margin-bottom: 8px; }
-        .header-desc { font-size: 14px; color: var(--text-muted); line-height: 1.6; }
-
-        .user-info-box {
-            margin-top: 20px; padding: 12px 16px;
-            background: var(--primary-light); border-radius: 10px;
-            display: flex; align-items: center; justify-content: space-between;
-            font-size: 13px; color: var(--primary); font-weight: 500;
-        }
-
-        /* Form Card */
-        .card {
-            background: var(--card-bg);
-            border-radius: var(--radius);
-            padding: 24px 32px;
-            box-shadow: var(--shadow);
-            border: 1px solid var(--border-color);
+            background: linear-gradient(135deg, var(--primary) 0%, #1e1b4b 100%);
+            border-radius: var(--radius-lg);
+            padding: 28px 32px;
+            color: white;
             margin-bottom: 20px;
         }
 
-        .card-label { font-size: 15px; font-weight: 600; margin-bottom: 8px; display: flex; justify-content: space-between; }
-        .required { color: var(--accent-red); margin-left: 4px; }
-        .input-hint { font-size: 12px; color: var(--text-muted); margin-bottom: 12px; }
-
-        .input-group { position: relative; }
-        .input-icon { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: var(--text-muted); }
-
-        input[type="text"], input[type="number"], input[type="date"], textarea {
-            width: 100%; padding: 12px 16px; font-size: 14px;
-            border: 1.5px solid var(--border-color); border-radius: 10px;
-            outline: none; background-color: #f8fafc;
+        /* Form Controls */
+        .form-card {
+            background: var(--card-bg);
+            border-radius: var(--radius-lg);
+            padding: 24px;
+            border: 1px solid var(--border-color);
+            margin-bottom: 18px;
+            box-shadow: var(--shadow-md);
         }
 
-        .with-icon { padding-left: 42px !important; }
-        input:focus, textarea:focus { border-color: var(--primary); background-color: #fff; box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1); }
-
-        /* Kalkulator Display */
-        .calc-preview {
-            margin-top: 16px; padding: 16px;
-            background: linear-gradient(135deg, #1e293b, #0f172a);
-            border-radius: 12px; color: white;
-            display: flex; justify-content: space-between; align-items: center;
+        .form-control-custom {
+            width: 100%;
+            padding: 12px 16px 12px 42px;
+            font-size: 14px;
+            font-weight: 500;
+            border: 1.5px solid var(--border-color);
+            border-radius: var(--radius-md);
+            outline: none;
+            background-color: #f8fafc;
         }
-        .calc-value { font-size: 22px; font-weight: 700; color: #38bdf8; }
 
-        /* File Upload */
-        .file-dropzone {
-            border: 2px dashed var(--border-color); border-radius: 12px;
-            padding: 28px 20px; text-align: center; background: #fafafa;
-            position: relative; cursor: pointer;
+        .form-control-custom:focus { border-color: var(--primary); background-color: #fff; }
+
+        .input-wrapper { position: relative; display: flex; align-items: center; }
+        .input-icon-left { position: absolute; left: 14px; color: #94a3b8; }
+
+        .category-chips { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 14px; }
+        .chip-option { display: none; }
+        .chip-label {
+            padding: 8px 14px; font-size: 12px; font-weight: 600;
+            border-radius: 20px; background: #f1f5f9; color: var(--text-muted); cursor: pointer;
         }
-        .file-dropzone input[type="file"] { position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; }
-        .file-icon { font-size: 32px; color: var(--primary); margin-bottom: 10px; }
+        .chip-option:checked + .chip-label { background: var(--primary-light); color: var(--primary); border: 1px solid var(--primary); }
 
-        /* Grid & Buttons */
-        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-        @media (max-width: 500px) { .grid-2 { grid-template-columns: 1fr; } }
-
-        .action-bar { display: flex; justify-content: space-between; align-items: center; margin-top: 28px; }
-        .btn-submit {
+        .btn-submit-main {
             background: var(--primary); color: white; border: none;
-            padding: 14px 32px; border-radius: 10px; font-weight: 600; cursor: pointer;
-            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+            padding: 14px 28px; border-radius: 12px; font-weight: 700; cursor: pointer;
         }
-        .btn-submit:hover { background: var(--primary-hover); }
-        .btn-reset { background: transparent; border: none; color: var(--text-muted); cursor: pointer; }
+        .btn-submit-main:disabled { opacity: 0.6; cursor: not-allowed; }
+
+        /* Summary Dashboard Cards */
+        .dash-card {
+            background: white;
+            border-radius: var(--radius-md);
+            padding: 20px;
+            border: 1px solid var(--border-color);
+            box-shadow: var(--shadow-md);
+        }
     </style>
 </head>
 <body>
 
-<div class="container">
-    
-    <!-- HEADER CARD -->
-    <div class="header-card">
-        <div class="header-body">
-            <h1 class="header-title">Data Modal Out</h1>
-            <p class="header-desc">Formulir pencatatan pengeluaran operasional dan modal harian secara otomatis & akurat.</p>
-            
-            <div class="user-info-box">
-                <span><i class="fa-regular fa-circle-user"></i>KELUARGA-ABS</span>
-                <span style="font-size: 11px; opacity: 0.8;">Terhubung</span>
-            </div>
-            <p style="color: var(--accent-red); font-size: 12px; margin-top: 14px;">* Menunjukkan pertanyaan yang wajib diisi</p>
-        </div>
+<div class="app-container">
+
+    <!-- MAIN TAB NAVIGATION -->
+    <div class="nav-tabs-custom">
+        <button class="tab-btn active" onclick="switchTab('formView', this)">
+            <i class="fa-solid fa-pen-to-square"></i> Input Transaksi
+        </button>
+        <button class="tab-btn" onclick="switchTab('dashboardView', this)">
+            <i class="fa-solid fa-chart-pie"></i> Lihat Dashboard
+        </button>
     </div>
 
-    <!-- FORM -->
-    <form id="modalOutForm">
-
-        <!-- CARD 1: KALKULATOR NOMINAL & QUANTITY -->
-        <div class="card">
-            <div class="card-label">Rincian Biaya <span class="required">*</span></div>
-            <div class="grid-2" style="margin-top: 12px;">
-                <div>
-                    <label class="input-hint" style="display:block;">Nominal Satuan (Rp)</label>
-                    <div class="input-group">
-                        <i class="fa-solid fa-rupiah-sign input-icon"></i>
-                        <input type="number" id="nominalSatuan" class="with-icon" placeholder="0" required oninput="calculateTotal()">
-                    </div>
-                </div>
-                <div>
-                    <label class="input-hint" style="display:block;">Jumlah / Kuantitas</label>
-                    <div class="input-group">
-                        <i class="fa-solid fa-hashtag input-icon"></i>
-                        <input type="number" id="kuantitas" class="with-icon" value="1" min="1" required oninput="calculateTotal()">
-                    </div>
-                </div>
-            </div>
-
-            <!-- LIVE CALCULATOR DISPLAY -->
-            <div class="calc-preview">
-                <div>
-                    <div style="font-size: 13px; color: #94a3b8;"><i class="fa-solid fa-calculator"></i> Total Pengeluaran</div>
-                    <div style="font-size: 11px; color: #64748b;">(Nominal × Kuantitas)</div>
-                </div>
-                <div class="calc-value" id="totalOutput">Rp 0</div>
-            </div>
-        </div>
-
-        <!-- CARD 2: BUKTI UPLOAD -->
-        <div class="card">
-            <div class="card-label">Bukti Pembayaran / Struk <span class="required">*</span></div>
-            <div class="input-hint">Unggah foto/file bukti (JPG, PNG, atau PDF. Maksimal 10 MB).</div>
-            
-            <div class="file-dropzone">
-                <input type="file" id="buktiFile" accept="image/*,.pdf" required onchange="handleFileSelect(this)">
-                <i class="fa-solid fa-cloud-arrow-up file-icon"></i>
-                <div style="font-size: 14px; font-weight: 600;">Klik atau seret file ke sini</div>
-                <div style="font-size: 12px; color: var(--text-muted);">Format: JPG, PNG, PDF (Maks 10MB)</div>
-                <div id="fileNameDisplay" style="margin-top:8px; color:var(--accent-green); font-size:13px; font-weight:600;"></div>
-            </div>
-        </div>
-
-        <!-- CARD 3: KEPERLUAN -->
-        <div class="card">
-            <div class="card-label">Keperluan / Keterangan <span class="required">*</span></div>
-            <textarea id="keperluan" rows="3" placeholder="Contoh: Pembelian material proyek..." required></textarea>
-        </div>
-
-        <!-- CARD 4: TANGGAL -->
-        <div class="card">
-            <div class="card-label">Tanggal Transaksi <span class="required">*</span></div>
-            <input type="date" id="tanggal" required>
-        </div>
-
-        <!-- ACTIONS -->
-        <div class="action-bar">
-            <button type="submit" class="btn-submit" id="submitBtn">
-                <i class="fa-solid fa-paper-plane"></i> Kirim Data
+    <!-- VIEW 1: FORM INPUT (PEMASUKAN / PENGELUARAN) -->
+    <div id="formView" class="view-section active">
+        
+        <!-- Toggle Pemasukan / Pengeluaran -->
+        <div class="type-toggle-container">
+            <button type="button" class="type-btn active-out" id="btnTypeOut" onclick="setType('Pengeluaran')">
+                <i class="fa-solid fa-arrow-up-from-bracket"></i> Modal Out (Pengeluaran)
             </button>
-            <button type="reset" class="btn-reset" onclick="resetForm()">Kosongkan formulir</button>
+            <button type="button" class="type-btn" id="btnTypeIn" onclick="setType('Pemasukan')">
+                <i class="fa-solid fa-arrow-down-to-bracket"></i> Modal In (Pemasukan)
+            </button>
         </div>
 
-    </form>
+        <div class="header-card">
+            <h2 id="headerTitle" style="font-weight: 800;">Pencatatan Pengeluaran</h2>
+            <p id="headerDesc" style="font-size: 13px; opacity: 0.85;">Catat biaya operasional atau pengeluaran modal usaha Anda.</p>
+        </div>
+
+        <form id="financeForm">
+            <input type="hidden" id="jenisTransaksi" value="Pengeluaran">
+
+            <div class="form-card">
+                <label style="font-size: 12px; font-weight: 600; color: var(--text-muted); margin-bottom: 8px; display: block;">Kategori Transaksi</label>
+                <div class="category-chips" id="categoryContainer"></div>
+
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label class="form-label font-weight-bold" style="font-size: 12px;">Nominal Satuan (Rp)</label>
+                        <div class="input-wrapper">
+                            <i class="fa-solid fa-rupiah-sign input-icon-left"></i>
+                            <input type="number" id="nominalSatuan" class="form-control-custom" placeholder="0" required oninput="calculateTotal()">
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label" style="font-size: 12px;">Jumlah / Qty</label>
+                        <div class="input-wrapper">
+                            <i class="fa-solid fa-hashtag input-icon-left"></i>
+                            <input type="number" id="kuantitas" class="form-control-custom" value="1" min="1" required oninput="calculateTotal()">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-3 p-3 bg-dark text-white rounded-3 d-flex justify-content-between align-items-center">
+                    <span style="font-size: 12px; color: #94a3b8;">Total Kalkulasi:</span>
+                    <span id="totalOutput" style="font-size: 20px; font-weight: 800; color: #38bdf8;">Rp 0</span>
+                </div>
+            </div>
+
+            <div class="form-card">
+                <div class="mb-3">
+                    <label class="form-label" style="font-size: 12px;">Keterangan</label>
+                    <textarea id="keperluan" rows="3" class="form-control-custom" style="padding-left: 16px;" placeholder="Tuliskan keterangan rinci..." required></textarea>
+                </div>
+                <div>
+                    <label class="form-label" style="font-size: 12px;">Tanggal Transaksi</label>
+                    <div class="input-wrapper">
+                        <i class="fa-regular fa-calendar input-icon-left"></i>
+                        <input type="date" id="tanggal" class="form-control-custom" required>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-card">
+                <label class="form-label" style="font-size: 12px;">Bukti Pembayaran / Struk (Opsional)</label>
+                <input type="file" id="buktiFile" class="form-control" accept="image/*,.pdf">
+            </div>
+
+            <div class="d-flex justify-content-between align-items-center">
+                <button type="reset" class="btn btn-link text-muted" onclick="resetForm()">Reset</button>
+                <button type="submit" class="btn-submit-main" id="submitBtn">
+                    <span id="btnSubmitText">Simpan Pengeluaran</span>
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <!-- VIEW 2: DASHBOARD MONITORING -->
+    <div id="dashboardView" class="view-section">
+        
+        <!-- Summary Ringkasan Khas -->
+        <div class="row g-3 mb-4">
+            <div class="col-md-4">
+                <div class="dash-card border-start border-success border-4">
+                    <div class="text-muted small fw-bold">TOTAL PEMASUKAN</div>
+                    <div class="fs-4 fw-bold text-success" id="dashTotalMasuk">Rp 0</div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="dash-card border-start border-danger border-4">
+                    <div class="text-muted small fw-bold">TOTAL PENGELUARAN</div>
+                    <div class="fs-4 fw-bold text-danger" id="dashTotalKeluar">Rp 0</div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="dash-card border-start border-primary border-4 bg-primary text-white">
+                    <div class="small fw-bold opacity-75">SALDO BERSIH</div>
+                    <div class="fs-4 fw-bold" id="dashSaldoBersih">Rp 0</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tabel Riwayat Data -->
+        <div class="dash-card">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h5 class="fw-bold m-0"><i class="fa-solid fa-list me-2"></i>Riwayat Transaksi</h5>
+                <button class="btn btn-sm btn-outline-secondary" onclick="muatDataDashboard()">
+                    <i class="fa-solid fa-rotate-right me-1"></i> Refresh Data
+                </button>
+            </div>
+
+            <div class="table-responsive">
+                <table class="table table-hover align-middle">
+                    <thead class="table-light small">
+                        <tr>
+                            <th>Tipe</th>
+                            <th>Kategori</th>
+                            <th>Tanggal</th>
+                            <th>Keterangan</th>
+                            <th>Nominal</th>
+                            <th>Qty</th>
+                            <th>Total</th>
+                            <th>Bukti</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tabelData" class="small">
+                        <tr>
+                            <td colspan="8" class="text-center text-muted py-4">Klik 'Refresh Data' untuk memuat transaksi...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+
 </div>
 
 <script>
-    // 1. ISI DENGAN URL APPS SCRIPT ANDA
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwYaHU0MadJsOCLaBBxwBiNW7lgUNtjdojy7aLNkC379t6ytS927zByHB-w0KVzPXhqAA/exec";
+    // URL WEB APP APPS SCRIPT BARU ANDA SUDAH DITEMPEL DI SINI
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwt87MHmi_X03axCJVI4ZiQAPUpE7I1epSo_TXKgki8sU6kpw4XIP5BRJLXZSjWN0Xa/exec";
 
     document.getElementById('tanggal').valueAsDate = new Date();
 
-    // Kalkulator Otomatis
+    const categories = {
+        Pengeluaran: [
+            { id: 'cat_op', name: '📦 Operasional' },
+            { id: 'cat_mat', name: '🏗️ Material' },
+            { id: 'cat_sal', name: '👥 Gaji/Upah' },
+            { id: 'cat_oth', name: '⚡ Lainnya' }
+        ],
+        Pemasukan: [
+            { id: 'cat_inv', name: '💰 Modal Usaha' },
+            { id: 'cat_sale', name: '🛒 Penjualan' },
+            { id: 'cat_ret', name: '🔄 Return/Refund' },
+            { id: 'cat_in_oth', name: '✨ Pemasukan Lain' }
+        ]
+    };
+
+    // Pindah Tab Instan
+    function switchTab(viewId, btnElement) {
+        document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
+        document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+        
+        document.getElementById(viewId).classList.add('active');
+        btnElement.classList.add('active');
+
+        if(viewId === 'dashboardView') {
+            muatDataDashboard();
+        }
+    }
+
+    // Toggle Tipe Transaksi
+    function setType(type) {
+        document.getElementById('jenisTransaksi').value = type;
+        if (type === 'Pemasukan') {
+            document.body.classList.add('theme-pemasukan');
+            document.getElementById('btnTypeIn').className = "type-btn active-in";
+            document.getElementById('btnTypeOut').className = "type-btn";
+            document.getElementById('headerTitle').innerText = "Pencatatan Pemasukan (Modal In)";
+            document.getElementById('btnSubmitText').innerText = "Simpan Pemasukan";
+        } else {
+            document.body.classList.remove('theme-pemasukan');
+            document.getElementById('btnTypeOut').className = "type-btn active-out";
+            document.getElementById('btnTypeIn').className = "type-btn";
+            document.getElementById('headerTitle').innerText = "Pencatatan Pengeluaran (Modal Out)";
+            document.getElementById('btnSubmitText').innerText = "Simpan Pengeluaran";
+        }
+        renderCategories(type);
+    }
+
+    function renderCategories(type) {
+        const container = document.getElementById('categoryContainer');
+        container.innerHTML = '';
+        categories[type].forEach((cat, index) => {
+            const checked = index === 0 ? 'checked' : '';
+            container.innerHTML += `
+                <input type="radio" id="${cat.id}" name="kategori" value="${cat.name}" class="chip-option" ${checked}>
+                <label for="${cat.id}" class="chip-label">${cat.name}</label>
+            `;
+        });
+    }
+
+    renderCategories('Pengeluaran');
+
     function calculateTotal() {
         const nominal = parseFloat(document.getElementById('nominalSatuan').value) || 0;
         const qty = parseFloat(document.getElementById('kuantitas').value) || 0;
-        const total = nominal * qty;
-        document.getElementById('totalOutput').innerText = "Rp " + total.toLocaleString('id-ID');
-    }
-
-    function handleFileSelect(input) {
-        const fileDisplay = document.getElementById('fileNameDisplay');
-        if (input.files && input.files[0]) {
-            fileDisplay.innerText = "✓ File terpilih: " + input.files[0].name;
-        }
+        document.getElementById('totalOutput').innerText = "Rp " + (nominal * qty).toLocaleString('id-ID');
     }
 
     function resetForm() {
         document.getElementById('totalOutput').innerText = "Rp 0";
-        document.getElementById('fileNameDisplay').innerText = "";
         document.getElementById('tanggal').valueAsDate = new Date();
     }
 
-    // Pengiriman Data ke Spreadsheet
-    document.getElementById('modalOutForm').addEventListener('submit', function(e) {
+    // Load Data dari Apps Script
+    async function muatDataDashboard() {
+        const tbody = document.getElementById('tabelData');
+        tbody.innerHTML = `<tr><td colspan="8" class="text-center text-muted py-3"><i class="fa-solid fa-spinner fa-spin me-2"></i>Memuat data...</td></tr>`;
+
+        try {
+            const res = await fetch(SCRIPT_URL);
+            const data = await res.json();
+            
+            tbody.innerHTML = '';
+            let totalMasuk = 0;
+            let totalKeluar = 0;
+
+            if (!Array.isArray(data) || data.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="8" class="text-center text-muted py-3">Belum ada data transaksi.</td></tr>`;
+                return;
+            }
+
+            data.forEach(row => {
+                const tipe = row["Jenis Transaksi"] || "Pengeluaran";
+                const kategori = row["Kategori"] || "-";
+                const tanggal = (row["Tanggal"] || "-").toString().split("T")[0];
+                const ket = row["Keterangan"] || "-";
+                const nominal = parseFloat(row["NominalSatuan"]) || 0;
+                const qty = parseInt(row["Jumlah"]) || 1;
+                const total = parseFloat(row["Total"]) || (nominal * qty);
+                const bukti = row["Bukti"] || "";
+
+                if (tipe.toLowerCase().includes("masuk")) {
+                    totalMasuk += total;
+                } else {
+                    totalKeluar += total;
+                }
+
+                const badgeTipe = tipe.toLowerCase().includes("masuk") 
+                    ? `<span class="badge bg-success-subtle text-success">Pemasukan</span>`
+                    : `<span class="badge bg-danger-subtle text-danger">Pengeluaran</span>`;
+
+                tbody.innerHTML += `
+                    <tr>
+                        <td>${badgeTipe}</td>
+                        <td><span class="badge bg-light text-dark border">${kategori}</span></td>
+                        <td>${tanggal}</td>
+                        <td>${ket}</td>
+                        <td>Rp ${nominal.toLocaleString('id-ID')}</td>
+                        <td>${qty}</td>
+                        <td><strong>Rp ${total.toLocaleString('id-ID')}</strong></td>
+                        <td>${bukti ? `<a href="${bukti}" target="_blank" class="btn btn-xs btn-outline-primary py-0 px-2" style="font-size:11px;">Lihat</a>` : '-'}</td>
+                    </tr>
+                `;
+            });
+
+            document.getElementById('dashTotalMasuk').innerText = `Rp ${totalMasuk.toLocaleString('id-ID')}`;
+            document.getElementById('dashTotalKeluar').innerText = `Rp ${totalKeluar.toLocaleString('id-ID')}`;
+            document.getElementById('dashSaldoBersih').innerText = `Rp ${(totalMasuk - totalKeluar).toLocaleString('id-ID')}`;
+
+        } catch (e) {
+            tbody.innerHTML = `<tr><td colspan="8" class="text-center text-danger py-3">Gagal mengambil data dari server. Periksa kembali jaringan atau deployment Apps Script.</td></tr>`;
+        }
+    }
+
+    // Submit Form Event
+    document.getElementById('financeForm').addEventListener('submit', function(e) {
         e.preventDefault();
         const btn = document.getElementById('submitBtn');
-        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Menyimpan...';
+        const btnText = document.getElementById('btnSubmitText');
+        
         btn.disabled = true;
+        const originalText = btnText.innerText;
+        btnText.innerText = "Menyimpan...";
 
         const fileInput = document.getElementById('buktiFile').files[0];
-        const reader = new FileReader();
+        const selectedCat = document.querySelector('input[name="kategori"]:checked').value;
+        const tipe = document.getElementById('jenisTransaksi').value;
 
-        reader.onload = function(evt) {
+        const sendData = (fileData = "", fileName = "") => {
             const payload = {
+                jenisTransaksi: tipe,
+                kategori: selectedCat,
                 nominalSatuan: document.getElementById('nominalSatuan').value,
                 kuantitas: document.getElementById('kuantitas').value,
                 total: (parseFloat(document.getElementById('nominalSatuan').value) || 0) * (parseFloat(document.getElementById('kuantitas').value) || 0),
                 keperluan: document.getElementById('keperluan').value,
                 tanggal: document.getElementById('tanggal').value,
-                fileName: fileInput.name,
-                fileData: evt.target.result
+                fileName: fileName,
+                fileData: fileData
             };
 
-            fetch(SCRIPT_URL, { method: "POST", body: JSON.stringify(payload) })
+            fetch(SCRIPT_URL, { 
+                method: "POST", 
+                headers: {
+                    "Content-Type": "text/plain;charset=utf-8"
+                },
+                body: JSON.stringify(payload) 
+            })
             .then(res => res.json())
-            .then(() => {
-                alert("Data & File berhasil masuk ke Google Spreadsheet!");
-                document.getElementById('modalOutForm').reset();
+            .then(res => {
+                alert(`Data ${tipe} berhasil disimpan!`);
+                document.getElementById('financeForm').reset();
                 resetForm();
+                setType('Pengeluaran');
             })
             .catch(err => {
-                alert("Data terkirim!");
-                document.getElementById('modalOutForm').reset();
+                alert(`Data ${tipe} berhasil dikirim!`);
+                document.getElementById('financeForm').reset();
                 resetForm();
+                setType('Pengeluaran');
             })
             .finally(() => {
-                btn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Kirim Data';
                 btn.disabled = false;
+                btnText.innerText = originalText;
             });
         };
 
-        reader.readAsDataURL(fileInput);
+        if (fileInput) {
+            const reader = new FileReader();
+            reader.onload = (evt) => sendData(evt.target.result, fileInput.name);
+            reader.readAsDataURL(fileInput);
+        } else {
+            sendData();
+        }
     });
 </script>
 
